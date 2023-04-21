@@ -1,4 +1,6 @@
-﻿namespace TimeLib
+﻿using System.Text.RegularExpressions;
+
+namespace TimeLib
 {
     public readonly struct Time : IEquatable<Time>, IComparable<Time>
     {
@@ -23,6 +25,24 @@
         public Time(byte hours, byte minutes): this(hours, minutes, 0) { }
     
         public Time(byte hours): this(hours, 0, 0) { }
+        
+        public Time(string timeText)
+        {
+            if (String.IsNullOrEmpty(timeText))
+                throw new ArgumentException();
+
+            string regexPattern = @"^(?:[01]?\d|2[0-3]):[0-5]\d:[0-5]\d$";
+            bool isMatch = Regex.IsMatch(timeText, regexPattern);
+
+            if (!isMatch)
+                throw new ArgumentException();
+
+            string[] timeSplit = timeText.Split(':');
+
+            Hours = byte.Parse(timeSplit[0]);
+            Minutes = byte.Parse(timeSplit[1]);
+            Seconds = byte.Parse(timeSplit[2]);
+        }
 
         public Time(): this((byte)DateTime.Now.Hour, (byte)DateTime.Now.Minute, (byte)DateTime.Now.Second) { }
 

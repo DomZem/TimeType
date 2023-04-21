@@ -1,4 +1,6 @@
-﻿namespace TimeLib
+﻿using System.Text.RegularExpressions;
+
+namespace TimeLib
 {
     public readonly struct TimePeriod : IEquatable<TimePeriod>, IComparable<TimePeriod>
     {
@@ -24,6 +26,27 @@
             long rightTotalSeconds = (right.Hours * 3600) + (right.Minutes * 60) + right.Seconds;
 
             Seconds = leftTotalSeconds >= rightTotalSeconds ? leftTotalSeconds - rightTotalSeconds : rightTotalSeconds - leftTotalSeconds;
+        }
+
+        public TimePeriod(string timeText)
+        {
+            if (String.IsNullOrEmpty(timeText))
+                throw new ArgumentException();
+
+            string regexPattern = @"^(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d$";
+            Regex regex = new Regex(regexPattern);
+            bool isMatch = regex.IsMatch(timeText);
+
+            if (!isMatch)
+                throw new ArgumentException();
+
+            string[] timeSplit = timeText.Split(':');
+            
+            long hours = long.Parse(timeSplit[0]);
+            long minutes = long.Parse(timeSplit[1]);
+            long seconds = long.Parse(timeSplit[2]);
+
+            Seconds = (hours * 3600) + (minutes * 60) + seconds;
         }
 
         #endregion
