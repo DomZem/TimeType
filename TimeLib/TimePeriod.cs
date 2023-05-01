@@ -88,6 +88,5 @@ namespace TimeLib
         #endregion
 
         public override string ToString() => $"{Seconds / 3600}:{(Seconds / 60) % 60:D2}:{Seconds % 60:D2}";
-
     }
 }
