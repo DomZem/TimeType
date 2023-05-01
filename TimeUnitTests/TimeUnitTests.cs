@@ -117,5 +117,122 @@ namespace TimeUnitTests
         }
 
         #endregion
+
+        #region ===== Equatable =====
+
+        [TestMethod, TestCategory("Equals")]
+        public void EqualMethod_NullArgument_ReturnsFalse()
+        {
+            Assert.IsFalse((new Time()).Equals(null));
+        }
+
+        [TestMethod, TestCategory("Equals")]
+        public void EqualMethod_OtherTypeArgument_ReturnsFalse()
+        {
+            Time t = new();
+            var anonymousTypeVariable = new { x = 0, y = 1 };
+            Assert.IsFalse(t.Equals(anonymousTypeVariable));
+        }
+
+        [TestMethod, TestCategory("Equals")]
+        public void EqualMethod_TheSameReferenceArgument_ReturnsTrue()
+        {
+            Time t1 = new();
+            Time t2 = t1;
+            Assert.IsTrue(t1.Equals(t2));
+        }
+
+        [TestMethod, TestCategory("Equals")]
+        [DataTestMethod]
+        [DataRow((byte)12, (byte)30, (byte)45, 
+                 (byte)12, (byte)30, (byte)45, true)]
+        [DataRow((byte)11, (byte)29, (byte)59,
+                 (byte)11, (byte)29, (byte)59, true)]
+        [DataRow((byte)1, (byte)59, (byte)59,
+                 (byte)1, (byte)59, (byte)59, true)]
+        [DataRow((byte)23, (byte)59, (byte)59,
+                 (byte)23, (byte)59, (byte)59, true)]
+        [DataRow((byte)10, (byte)39, (byte)30,
+                 (byte)10, (byte)39, (byte)31, false)]
+        [DataRow((byte)12, (byte)0, (byte)0,
+                 (byte)11, (byte)59, (byte)59, false)]
+        public void EqualMethod_ReturnsExpectedResult(byte t1Hourse, byte t1Minutes, byte t1Seconds, byte t2Hourse, byte t2Minutes, byte t2Seconds, bool result)
+        {
+            Time t1 = new(t1Hourse, t1Minutes, t1Seconds);
+            Time t2 = new(t2Hourse, t2Minutes, t2Seconds);
+            Assert.AreEqual(result, t1.Equals(t2));
+        }
+
+        [TestMethod, TestCategory("Equals")]
+        public void EqualOperator_ComapreWithNull_ReturnsFalse()
+        {
+            Assert.IsFalse(new Time() == null);
+        }
+
+        [TestMethod, TestCategory("Equals")]
+        public void NotEqualOperator_ComapreWithNull_ReturnsTrue()
+        {
+            Assert.IsTrue(new Time() != null);
+        }
+
+        [TestMethod, TestCategory("Equals")]
+        public void EqualOperator_ComapreWithTheSameReference_ReturnsTrue()
+        {
+            Time t1 = new();
+            Time t2 = t1;
+            Assert.IsTrue(t1 == t2);
+        }
+
+        [TestMethod, TestCategory("Equals")]
+        public void NotEqualOperator_ComapreWithTheSameReference_ReturnsFalse()
+        {
+            Time t1 = new();
+            Time t2 = t1;
+            Assert.IsFalse(t1 != t2);
+        }
+
+        [TestMethod, TestCategory("Equals")]
+        [DataTestMethod]
+        [DataRow((byte)12, (byte)30, (byte)45,
+                 (byte)12, (byte)30, (byte)45, true)]
+        [DataRow((byte)11, (byte)29, (byte)59,
+                 (byte)11, (byte)29, (byte)59, true)]
+        [DataRow((byte)1, (byte)59, (byte)59,
+                 (byte)1, (byte)59, (byte)59, true)]
+        [DataRow((byte)23, (byte)59, (byte)59,
+                 (byte)23, (byte)59, (byte)59, true)]
+        [DataRow((byte)10, (byte)39, (byte)30,
+                 (byte)10, (byte)39, (byte)31, false)]
+        [DataRow((byte)12, (byte)0, (byte)0,
+                 (byte)11, (byte)59, (byte)59, false)]
+        public void EqualOperator_ReturnsExpectedResult(byte t1Hourse, byte t1Minutes, byte t1Seconds, byte t2Hourse, byte t2Minutes, byte t2Seconds, bool result)
+        {
+            Time t1 = new(t1Hourse, t1Minutes, t1Seconds);
+            Time t2 = new(t2Hourse, t2Minutes, t2Seconds);
+            Assert.AreEqual(result, t1 == t2);
+        }
+
+        [TestMethod, TestCategory("Equals")]
+        [DataTestMethod]
+        [DataRow((byte)12, (byte)30, (byte)45,
+                 (byte)12, (byte)30, (byte)45, false)]
+        [DataRow((byte)11, (byte)29, (byte)59,
+                 (byte)11, (byte)29, (byte)59, false)]
+        [DataRow((byte)1, (byte)59, (byte)59,
+                 (byte)1, (byte)59, (byte)59, false)]
+        [DataRow((byte)23, (byte)59, (byte)59,
+                 (byte)23, (byte)59, (byte)59, false)]
+        [DataRow((byte)10, (byte)39, (byte)30,
+                 (byte)10, (byte)39, (byte)31, true)]
+        [DataRow((byte)12, (byte)0, (byte)0,
+                 (byte)11, (byte)59, (byte)59, true)]
+        public void NotEqualOperator_ReturnsExpectedResult(byte t1Hourse, byte t1Minutes, byte t1Seconds, byte t2Hourse, byte t2Minutes, byte t2Seconds, bool result)
+        {
+            Time t1 = new(t1Hourse, t1Minutes, t1Seconds);
+            Time t2 = new(t2Hourse, t2Minutes, t2Seconds);
+            Assert.AreEqual(result, t1 != t2);
+        }
+
+        #endregion
     }
 }

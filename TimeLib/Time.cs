@@ -2,7 +2,7 @@
 
 namespace TimeLib
 {
-    public readonly struct Time : IEquatable<Time>, IComparable<Time>
+    public readonly struct Time : IEquatable<Time>, IComparable, IComparable<Time>
     {
         public readonly byte Hours { get; }
 
@@ -44,6 +44,7 @@ namespace TimeLib
             Seconds = byte.Parse(timeSplit[2]);
         }
 
+        // Extra
         public Time(): this((byte)DateTime.Now.Hour, (byte)DateTime.Now.Minute, (byte)DateTime.Now.Second) { }
 
         #endregion
@@ -54,11 +55,9 @@ namespace TimeLib
         {
             if (obj is null) return false;
 
-            if (obj is Time)
-            {
-                return Equals((Time)obj);
-            }
-
+            if (obj is Time time)
+                return Equals(time);
+            
             return false;
         }
 
@@ -73,6 +72,18 @@ namespace TimeLib
         #endregion
 
         #region ===== Comparable =====
+
+        public int CompareTo(object? obj)
+        {
+            if (obj is null) return +1;
+
+            if (obj is not Time)
+                throw new ArgumentException();
+
+            var other = (Time)obj;
+
+            return this.CompareTo(other);
+        }
 
         public int CompareTo(Time other)
         {

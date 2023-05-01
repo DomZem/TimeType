@@ -7,7 +7,7 @@ namespace TimeLib
         public readonly long Seconds { get; }
 
         #region ===== Constructors =====
-
+        
         public TimePeriod(long hours, long minutes, long seconds)
         {
             if(hours < 0 || minutes < 0 || minutes > 59 || seconds < 0 || seconds > 59)
@@ -17,7 +17,7 @@ namespace TimeLib
         }
 
         public TimePeriod(long hours, long minutes): this(hours, minutes, 0) { }
-
+        
         public TimePeriod(long seconds): this(0, 0, seconds) { }
 
         public TimePeriod(Time left, Time right)
@@ -57,11 +57,9 @@ namespace TimeLib
         {
             if (obj is null) return false;
 
-            if (obj is TimePeriod)
-            {
-                return Equals((TimePeriod)obj);
-            }
-
+            if (obj is TimePeriod period)
+                return Equals(period);
+            
             return false;
         }
 
