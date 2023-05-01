@@ -234,5 +234,91 @@ namespace TimeUnitTests
         }
 
         #endregion
+
+        #region ===== Comparable =====
+
+        [TestMethod, TestCategory("Relations")]
+        public void CompareTo_NullObject_ReturnsPositiveValue()
+        {
+            Time time = new Time(1, 2, 3);
+            int result = time.CompareTo(null);
+            Assert.IsTrue(result > 0);
+        }
+
+        [TestMethod, TestCategory("Relations")]
+        public void CompareTo_NonTimeObject_ThrowsArgumentException()
+        {
+            Time time = new Time(1, 2, 3);
+            Assert.ThrowsException<ArgumentException>(() => time.CompareTo("not a time object"));
+        }
+
+        [TestMethod, TestCategory("Relations")]
+        public void CompareTo_SameTime_ReturnsZero()
+        {
+            Time time1 = new Time(1, 2, 3);
+            Time time2 = new Time(1, 2, 3);
+            int result = time1.CompareTo(time2);
+            Assert.AreEqual(0, result);
+        }
+
+        [TestMethod, TestCategory("Relations")]
+        public void CompareTo_EarlierTime_ReturnsNegativeValue()
+        {
+            Time time1 = new Time(1, 2, 3);
+            Time time2 = new Time(1, 3, 3);
+            int result = time1.CompareTo(time2);
+            Assert.IsTrue(result < 0);
+        }
+
+        [TestMethod, TestCategory("Relations")]
+        public void CompareTo_LaterTime_ReturnsPositiveValue()
+        {
+            Time time1 = new Time(1, 2, 3);
+            Time time2 = new Time(1, 1, 3);
+            int result = time1.CompareTo(time2);
+            Assert.IsTrue(result > 0);
+        }
+
+        [TestMethod, TestCategory("Relations")]
+        [DataTestMethod]
+        [DataRow("1:00:00", ">",  "2:00:00", false)]
+        [DataRow("1:00:00", ">",  "1:01:00", false)]
+        [DataRow("1:00:00", ">",  "1:00:01", false)]
+        [DataRow("1:00:00", ">",  "1:00:00", false)]
+        [DataRow("1:00:00", ">=", "2:00:00", false)]
+        [DataRow("1:00:00", ">=", "1:01:00", false)]
+        [DataRow("1:00:00", ">=", "1:00:01", false)]
+        [DataRow("1:00:00", ">=", "1:00:00", true)]
+        [DataRow("1:00:00", "<",  "2:00:00", true)]
+        [DataRow("1:00:00", "<", "1:01:00", true)]
+        [DataRow("1:00:00", "<", "1:00:01", true)]
+        [DataRow("1:00:00", "<", "1:00:00", false)]
+        [DataRow("1:00:00", "<=", "2:00:00", true)]
+        [DataRow("1:00:00", "<=", "1:01:00", true)]
+        [DataRow("1:00:00", "<=", "1:00:01", true)]
+        [DataRow("1:00:00", "<=", "1:00:00", true)]
+        public void RelationOperator_ReturnsExpectedResult(string time1Text, string operatorText, string time2Text, bool result)
+        {
+            Time t1 = new(time1Text);
+            Time t2 = new(time2Text);
+            
+            switch(operatorText) 
+            {
+                case ">":
+                    Assert.AreEqual(result, t1 > t2);
+                    break;
+                case ">=":
+                    Assert.AreEqual(result, t1 >= t2);
+                    break;
+                case "<":
+                    Assert.AreEqual(result, t1 < t2);
+                    break;
+                case "<=":
+                    Assert.AreEqual(result, t1 <= t2);
+                    break;
+            }
+        }
+
+        #endregion
     }
 }
