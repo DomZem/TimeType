@@ -33,9 +33,8 @@ namespace TimeLib
             if (String.IsNullOrEmpty(timeText))
                 throw new ArgumentException();
 
-            string regexPattern = @"^(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d$";
-            Regex regex = new Regex(regexPattern);
-            bool isMatch = regex.IsMatch(timeText);
+            string regexPattern = @"^([1-9]?[0-9]+)((:[0-5]?[0-9]){0,2}|((:[0-5]?[0-9]){2}\.([0]{0,3}|[1-9][0-9]{0,2})))$";
+            bool isMatch = Regex.IsMatch(timeText, regexPattern);
 
             if (!isMatch)
                 throw new ArgumentException();

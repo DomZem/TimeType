@@ -34,8 +34,8 @@ namespace TimeLib
                 throw new ArgumentOutOfRangeException();
 
             Hours = hours;
-            Minutes = minutes;  
-            Seconds = seconds;  
+            Minutes = minutes;
+            Seconds = seconds;
         }
 
         /// <summary>
@@ -43,13 +43,13 @@ namespace TimeLib
         /// </summary>
         /// <param name="hours">The number of hours in the time. Must be between 0 and 23.</param>
         /// <param name="minutes">The number of hours in the time. Must be between 0 and 23.</param>
-        public Time(byte hours, byte minutes): this(hours, minutes, 0) { }
+        public Time(byte hours, byte minutes) : this(hours, minutes, 0) { }
 
         /// <summary>
         /// Creates a new Time object with the specified number of hours. The minutes and seconds are set to 0.
         /// </summary>
         /// <param name="hours">The number of hours in the time. Must be between 0 and 23.</param>
-        public Time(byte hours): this(hours, 0, 0) { }
+        public Time(byte hours) : this(hours, 0, 0) { }
 
         /// <summary>
         /// Creates a new Time object from a string in the format "hh:mm:ss".
@@ -78,19 +78,19 @@ namespace TimeLib
         /// <summary>
         /// Creates a new Time object initialized to the current system time.
         /// </summary>
-        public Time(): this((byte)DateTime.Now.Hour, (byte)DateTime.Now.Minute, (byte)DateTime.Now.Second) { }
+        public Time() : this((byte)DateTime.Now.Hour, (byte)DateTime.Now.Minute, (byte)DateTime.Now.Second) { }
 
         #endregion
 
         #region ===== Equatable =====
-     
+
         public override bool Equals(object? obj)
         {
             if (obj is null) return false;
 
             if (obj is Time time)
                 return Equals(time);
-            
+
             return false;
         }
 
@@ -144,7 +144,7 @@ namespace TimeLib
         {
             if (Hours != other.Hours)
                 return Hours.CompareTo(other.Hours);
-            
+
             if (!Minutes.Equals(other.Minutes))
                 return Minutes.CompareTo(other.Minutes);
 
@@ -161,10 +161,64 @@ namespace TimeLib
 
         #endregion
 
+        #region ===== Arithmetic operation =====
+
+        /// <summary>
+        /// Adds the specified time period to the given time and returns a new <see cref="Time"/> object.
+        /// </summary>
+        /// <param name="time">The time to which to add the time period.</param>
+        /// <param name="timePeriod">The time period to add to the time.</param>
+        /// <returns>A new <see cref="Time"/> object that represents the result of adding the time period to the given time.</returns>
+        public static Time Plus(Time time, TimePeriod timePeriod)
+        {
+            long totalSeconds = time.GetTotalSeconds() + timePeriod.Seconds;
+
+            byte hours = (byte)(totalSeconds / 3600 % 24);
+            byte minutes = (byte)(totalSeconds / 60 % 60);
+            byte seconds = (byte)(totalSeconds % 60);
+
+            return new Time(hours, minutes, seconds);
+        }
+
+        public Time Plus(TimePeriod timePeriod) => Plus(this, timePeriod);
+
+        public static Time operator +(Time time, TimePeriod timePeriod) => Plus(time, timePeriod);
+
+        /// <summary>
+        /// Subtracts the given <see cref="TimePeriod"/> from the specified <see cref="Time"/> instance.
+        /// If the resulting time is negative, it is wrapped to the previous day.
+        /// </summary>
+        /// <param name="time">The <see cref="Time"/> instance to subtract from.</param>
+        /// <param name="timePeriod">The <see cref="TimePeriod"/> to subtract.</param>
+        /// <returns>A new <see cref="Time"/> instance that represents the result of the subtraction.</returns>
+        public static Time Minus(Time time, TimePeriod timePeriod)
+        {
+            long totalSeconds = time.GetTotalSeconds() - timePeriod.Seconds;
+            while (totalSeconds < 0)
+                totalSeconds += 24 * 3600;
+            byte hours = (byte)(totalSeconds / 3600 % 24);
+            byte minutes = (byte)(totalSeconds / 60 % 60);
+            byte seconds = (byte)(totalSeconds % 60);
+            
+            return new Time(hours, minutes, seconds);
+        }
+
+        public Time Minus(TimePeriod timePeriod) => Minus(this, timePeriod);
+
+        public static Time operator -(Time time, TimePeriod timePeriod) => Minus(time, timePeriod);
+
+        #endregion
+
+        #region ===== ToString =====
+
         /// <summary>
         /// Returns the string representation of this Time object in the format "hh:mm:ss".
         /// </summary>
         /// <returns>The string representation of this Time object.</returns>
         public override string ToString() => $"{Hours:00}:{Minutes:00}:{Seconds:00}";
+
+        #endregion
+
+        private int GetTotalSeconds() => (Hours * 3600) + (Minutes * 60) + Seconds;
     }
 }

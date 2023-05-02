@@ -8,7 +8,7 @@ namespace TimeUnitTests
         #region ===== Constructor(Hours, Minutes, Seconds) =====
 
         [DataTestMethod, TestCategory("Constructors")]
-        [DataRow((byte)12, (byte)30, (byte)45, 
+        [DataRow((byte)12, (byte)30, (byte)45,
                  (byte)12, (byte)30, (byte)45)]
         [DataRow((byte)11, (byte)29, (byte)59,
                  (byte)11, (byte)29, (byte)59)]
@@ -27,7 +27,7 @@ namespace TimeUnitTests
         [DataRow((byte)11, (byte)0, (byte)60)]
         [DataRow((byte)11, (byte)60, (byte)0)]
         [DataRow((byte)24, (byte)40, (byte)0)]
-        public void Constructor_HoursMinutesSecondsArguments_ThrowsArgumentOutOfRangeException(byte hours, byte minutes, byte seconds)
+        public void Constructor_IncorrectHoursMinutesSecondsArguments_ThrowsArgumentOutOfRangeException(byte hours, byte minutes, byte seconds)
         {
             Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Time(hours, minutes, seconds));
         }
@@ -35,6 +35,7 @@ namespace TimeUnitTests
         #endregion
 
         #region ===== Constructor(Hours, Minutes) =====
+
         [DataTestMethod, TestCategory("Constructors")]
         [DataRow((byte)12, (byte)30,
                  (byte)12, (byte)30)]
@@ -54,7 +55,7 @@ namespace TimeUnitTests
         [DataTestMethod, TestCategory("Constructors")]
         [DataRow((byte)11, (byte)60)]
         [DataRow((byte)24, (byte)40)]
-        public void Constructor_HoursMinutesArguments_ThrowsArgumentOutOfRangeException(byte hours, byte minutes)
+        public void Constructor_IncorrectHoursMinutesArguments_ThrowsArgumentOutOfRangeException(byte hours, byte minutes)
         {
             Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Time(hours, minutes));
         }
@@ -64,12 +65,9 @@ namespace TimeUnitTests
         #region ===== Constructor(Hours) =====
 
         [DataTestMethod, TestCategory("Constructors")]
-        [DataRow((byte)12,
-                 (byte)12)]
-        [DataRow((byte)11, 
-                 (byte)11)]
-        [DataRow((byte)1,
-                 (byte)1)]
+        [DataRow((byte)12, (byte)12)]
+        [DataRow((byte)11, (byte)11)]
+        [DataRow((byte)1, (byte)1)]
         public void Constructor_HoursArgument_SetsExpectedProperties(byte hours, byte expectedHours)
         {
             var time = new Time(hours);
@@ -81,7 +79,7 @@ namespace TimeUnitTests
 
         [DataTestMethod, TestCategory("Constructors")]
         [DataRow((byte)24)]
-        public void Constructor_HoursArgument_ThrowsArgumentOutOfRangeException(byte hours)
+        public void Constructor_IncorrectHoursArgument_ThrowsArgumentOutOfRangeException(byte hours)
         {
             Assert.ThrowsException<ArgumentOutOfRangeException>(() => new Time(hours));
         }
@@ -111,7 +109,7 @@ namespace TimeUnitTests
         [DataRow("23:60:00")]
         [DataRow("23:-1:00")]
         [DataRow("24:12:00")]
-        public void Constructor_TextArgument_ThrowsArgumentOutOfRangeException(string text)
+        public void Constructor_IncorrectTextArgument_ThrowsArgumentOutOfRangeException(string text)
         {
             Assert.ThrowsException<ArgumentException>(() => new Time(text));
         }
@@ -142,8 +140,7 @@ namespace TimeUnitTests
             Assert.IsTrue(t1.Equals(t2));
         }
 
-        [TestMethod, TestCategory("Equals")]
-        [DataTestMethod]
+        [DataTestMethod, TestCategory("Equals")]
         [DataRow("12:34:56", "12:34:56", true)]
         [DataRow("00:00:00", "00:00:00", true)]
         [DataRow("00:00:01", "00:00:00", false)]
@@ -185,8 +182,7 @@ namespace TimeUnitTests
             Assert.IsFalse(t1 != t2);
         }
 
-        [TestMethod, TestCategory("Equals")]
-        [DataTestMethod]
+        [DataTestMethod, TestCategory("Equals")]
         [DataRow("12:30:00", "==", "12:30:00", true)]
         [DataRow("12:30:00", "==", "12:31:00", false)]
         [DataRow("12:30:00", "!=", "12:30:00", false)]
@@ -218,7 +214,7 @@ namespace TimeUnitTests
         #region ===== Comparable =====
 
         [TestMethod, TestCategory("Compares")]
-        public void CompareToMethod_Null_ReturnsPositiveValue()
+        public void CompareToMethod_NullArgument_ReturnsPositiveValue()
         {
             Time time = new Time(1, 2, 3);
             int result = time.CompareTo(null);
@@ -226,14 +222,14 @@ namespace TimeUnitTests
         }
 
         [TestMethod, TestCategory("Compares")]
-        public void CompareToMethod_NonTimeObject_ThrowsArgumentException()
+        public void CompareToMethod_NonTimeObjectArgument_ThrowsArgumentException()
         {
             Time time = new Time(1, 2, 3);
             Assert.ThrowsException<ArgumentException>(() => time.CompareTo("not a time object"));
         }
 
         [TestMethod, TestCategory("Compares")]
-        public void CompareToMethod_SameTime_ReturnsZero()
+        public void CompareToMethod_SameTimeArgument_ReturnsZero()
         {
             Time time1 = new Time(1, 2, 3);
             Time time2 = new Time(1, 2, 3);
@@ -242,7 +238,7 @@ namespace TimeUnitTests
         }
 
         [TestMethod, TestCategory("Compares")]
-        public void CompareToMethod_EarlierTime_ReturnsNegativeValue()
+        public void CompareToMethod_EarlierTimeArgument_ReturnsNegativeValue()
         {
             Time time1 = new Time(1, 2, 3);
             Time time2 = new Time(1, 3, 3);
@@ -251,7 +247,7 @@ namespace TimeUnitTests
         }
 
         [TestMethod, TestCategory("Compares")]
-        public void CompareToMethod_LaterTime_ReturnsPositiveValue()
+        public void CompareToMethod_LaterTimeArgument_ReturnsPositiveValue()
         {
             Time time1 = new Time(1, 2, 3);
             Time time2 = new Time(1, 1, 3);
@@ -259,17 +255,16 @@ namespace TimeUnitTests
             Assert.IsTrue(result > 0);
         }
 
-        [TestMethod, TestCategory("Compares")]
-        [DataTestMethod]
-        [DataRow("1:00:00", ">",  "2:00:00", false)]
-        [DataRow("1:00:00", ">",  "1:01:00", false)]
-        [DataRow("1:00:00", ">",  "1:00:01", false)]
-        [DataRow("1:00:00", ">",  "1:00:00", false)]
+        [DataTestMethod, TestCategory("Compares")]
+        [DataRow("1:00:00", ">", "2:00:00", false)]
+        [DataRow("1:00:00", ">", "1:01:00", false)]
+        [DataRow("1:00:00", ">", "1:00:01", false)]
+        [DataRow("1:00:00", ">", "1:00:00", false)]
         [DataRow("1:00:00", ">=", "2:00:00", false)]
         [DataRow("1:00:00", ">=", "1:01:00", false)]
         [DataRow("1:00:00", ">=", "1:00:01", false)]
         [DataRow("1:00:00", ">=", "1:00:00", true)]
-        [DataRow("1:00:00", "<",  "2:00:00", true)]
+        [DataRow("1:00:00", "<", "2:00:00", true)]
         [DataRow("1:00:00", "<", "1:01:00", true)]
         [DataRow("1:00:00", "<", "1:00:01", true)]
         [DataRow("1:00:00", "<", "1:00:00", false)]
@@ -281,8 +276,8 @@ namespace TimeUnitTests
         {
             Time t1 = new(time1Text);
             Time t2 = new(time2Text);
-            
-            switch(operatorText) 
+
+            switch (operatorText)
             {
                 case ">":
                     Assert.AreEqual(expectedResult, t1 > t2);
@@ -297,6 +292,90 @@ namespace TimeUnitTests
                     Assert.AreEqual(expectedResult, t1 <= t2);
                     break;
             }
+        }
+
+        #endregion
+
+        #region ===== Arithmetic operation =====
+
+        [DataTestMethod, TestCategory("Arithmetics")]
+        [DataRow("12:30:30", "1:25:25", "13:55:55", true)]
+        [DataRow("06:00:00", "18:00:00", "00:00:00", true)]
+        [DataRow("23:59:59", "00:00:01", "00:00:00", true)]
+        [DataRow("23:59:59", "00:00:01", "23:59:59", false)]
+        [DataRow("00:00:00", "23:59:59", "23:59:59", true)]
+        [DataRow("23:59:59", "0:00:02", "00:00:01", true)]
+        [DataRow("20:40:40", "29:12:23", "01:53:03", true)]
+        public void PlusStaticMethod_ReturnsExpectedResult(string timeText, string timePeriodText, string newTimeResult, bool expectedResult)
+        {
+            Time time = new(timeText);
+            TimePeriod timePeriod = new TimePeriod(timePeriodText);
+
+            Assert.AreEqual(expectedResult, Time.Plus(time, timePeriod).ToString() == newTimeResult);
+        }
+
+        [DataTestMethod, TestCategory("Arithmetics")]
+        [DataRow("12:30:30", "1:25:25", "11:05:05", true)]
+        [DataRow("06:00:00", "18:00:00", "12:00:00", true)]
+        [DataRow("00:00:01", "00:00:02", "23:59:59", true)]
+        [DataRow("00:00:00", "00:00:01", "23:59:59", true)]
+        [DataRow("1:00:00", "2:00:00", "23:00:00", true)]
+        [DataRow("00:00:01", "00:00:15", "23:59:46", true)]
+        [DataRow("21:37:00", "127:45:49", "13:51:11", true)]
+        public void MinusStaticMethod_ReturnsExpectedResult(string timeText, string timePeriodText, string newTimeResult, bool expectedResult)
+        {
+            Time time = new(timeText);
+            TimePeriod timePeriod = new TimePeriod(timePeriodText);
+
+            Assert.AreEqual(expectedResult, Time.Minus(time, timePeriod).ToString() == newTimeResult);
+        }
+
+        [DataTestMethod, TestCategory("Arithmetics")]
+        [DataRow("12:30:30", "+", "2:00:00", "14:30:30", true)]
+        [DataRow("12:30:30", "+", "2:00:00", "14:30:00", false)]
+        [DataRow("12:30:30", "+", "2:00:00", "14:30:30", true)]
+        [DataRow("12:30:30", "+", "2:00:00", "14:30:00", false)]
+        [DataRow("23:00:00", "+", "1:00:00", "00:00:00", true)]
+        [DataRow("00:00:00", "+", "0:01:00", "00:01:00", true)]
+        [DataRow("00:00:00", "-", "0:01:00", "23:59:00", true)]
+        [DataRow("23:59:59", "+", "0:00:02", "00:00:01", true)]
+        [DataRow("00:00:01", "-", "0:00:02", "23:59:59", true)]
+        [DataRow("23:59:59", "-", "0:00:01", "23:59:58", true)]
+        [DataRow("00:00:01", "+", "23:59:59", "00:00:00", true)]
+        [DataRow("1:20:35", "+", "22:30:59", "23:51:34", true)]
+        [DataRow("1:00:00", "-", "2:00:00", "23:00:00", true)]
+        [DataRow("1:00:00", "-", "2:00:00", "22:59:59", false)]
+        [DataRow("17:45:56", "+", "45:12:48", "14:58:44", true)]
+        [DataRow("21:37:00", "-", "127:45:49", "21:37:00", false)]
+        public void ArithmeticOperator_ReturnsExpectedResult(string timeText, string operatorText, string timePeriodText, string newTimeResult, bool expectedResult)
+        {
+            Time time = new(timeText);
+            TimePeriod timePeriod = new TimePeriod(timePeriodText);
+            
+            switch (operatorText)
+            {
+                case "+":
+                    Assert.AreEqual(expectedResult, (time + timePeriod).ToString() == newTimeResult);
+                    break;
+                case "-":
+                    Assert.AreEqual(expectedResult, (time - timePeriod).ToString() == newTimeResult);
+                    break;
+            }
+        }
+
+        #endregion
+
+        #region ===== ToString =====
+
+        [DataTestMethod, TestCategory("ToString")]
+        [DataRow((byte)12, (byte)30, (byte)30, "12:30:30")]
+        [DataRow((byte)0, (byte)0, (byte)0, "00:00:00")]
+        [DataRow((byte)23, (byte)59, (byte)59, "23:59:59")]
+        public void ToString_ReturnsExpectedResult(byte hours, byte minutes, byte seconds, string expectedString)
+        {
+            Time time = new Time(hours, minutes, seconds);
+            string actualString = time.ToString();
+            Assert.AreEqual(expectedString, actualString);
         }
 
         #endregion
