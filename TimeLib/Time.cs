@@ -97,7 +97,7 @@ namespace TimeLib
         /// <summary>
         /// Determines whether this <see cref="Time"/> instance is equal to another <see cref="Time"/> instance.
         /// </summary>
-        /// <param name="other">The <see cref="Time"/> to compare with this instance.</param>
+        /// <param name="other">The <see cref="Time"/> object to compare with this instance.</param>
         /// <returns><c>true</c> if the two instances have the same number of hours, minutes and seconds; otherwise, <c>false</c>.</returns>
         public bool Equals(Time other) => Hours == other.Hours && Minutes == other.Minutes && Seconds == other.Seconds;
 
@@ -212,9 +212,9 @@ namespace TimeLib
         #region ===== ToString =====
 
         /// <summary>
-        /// Returns the string representation of this Time object in the format "hh:mm:ss".
+        /// Returns the string representation of this <see cref="Time"/> object in the format "hh:mm:ss".
         /// </summary>
-        /// <returns>The string representation of this Time object.</returns>
+        /// <returns>The string representation of this <see cref="Time"/> object.</returns>
         public override string ToString() => $"{Hours:00}:{Minutes:00}:{Seconds:00}";
 
         #endregion
