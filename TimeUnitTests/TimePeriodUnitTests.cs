@@ -142,6 +142,186 @@ namespace TimeUnitTests
 
         #endregion
 
+        #region ===== Equatable =====
+
+        [TestMethod, TestCategory("Equals")]
+        public void EqualMethod_NullArgument_ReturnsFalse()
+        {
+            Assert.IsFalse((new TimePeriod(23, 10, 10)).Equals(null));
+        }
+
+        [TestMethod, TestCategory("Equals")]
+        public void EqualMethod_OtherTypeArgument_ReturnsFalse()
+        {
+            TimePeriod timePeriod = new TimePeriod(23, 10, 10);
+            var anonymousTypeVariable = new { x = 0, y = 1 };
+            Assert.IsFalse(timePeriod.Equals(anonymousTypeVariable));
+        }
+
+        [TestMethod, TestCategory("Equals")]
+        public void EqualMethod_SameReferenceObjectArgument_ReturnsTrue()
+        {
+            TimePeriod timePeriod1 = new TimePeriod(23, 10, 10);
+            TimePeriod timePeriod2 = timePeriod1;
+            Assert.IsTrue(timePeriod1.Equals(timePeriod2));
+        }
+
+        [DataTestMethod, TestCategory("Equals")]
+        [DataRow("12:34:56", "12:34:56", true)]
+        [DataRow("127:59:48", "127:59:48", true)]
+        [DataRow("7:40:34", "7:40:35", false)]
+        public void EqualMethod_ReturnsExpectedResult(string timePeriod1Text, string timePeriod2Text, bool expectedResult)
+        {
+            TimePeriod timePeriod1 = new(timePeriod1Text);
+            TimePeriod timePeriod2 = new(timePeriod2Text);
+            Assert.AreEqual(expectedResult, timePeriod1.Equals(timePeriod2));
+        }
+
+        [TestMethod, TestCategory("Equals")]
+        public void EqualOperator_ComapreWithNull_ReturnsFalse()
+        {
+            Assert.IsFalse(new TimePeriod(23, 10, 10) == null);
+        }
+
+        [TestMethod, TestCategory("Equals")]
+        public void NotEqualOperator_CompareWithNull_ReturnsTrue()
+        {
+            Assert.IsTrue(new TimePeriod(23, 10, 10) != null);
+        }
+
+        [TestMethod, TestCategory("Equals")]
+        public void EqualOperator_CompareWithSameReference_ReturnsTrue()
+        {
+            TimePeriod timePeriod1 = new TimePeriod(23, 10, 10);
+            TimePeriod timePeriod2 = timePeriod1;
+            Assert.IsTrue(timePeriod1 == timePeriod2);
+        }
+
+        [TestMethod, TestCategory("Equals")]
+        public void NotEqualOperator_CompareWithSameReference_ReturnsFalse()
+        {
+            TimePeriod timePeriod1 = new TimePeriod(23, 10, 10);
+            TimePeriod timePeriod2 = timePeriod1;
+
+
+            Assert.IsFalse(timePeriod1 != timePeriod2);
+        }
+
+        [DataTestMethod, TestCategory("Equals")]
+        [DataRow("12:30:00", "==", "12:30:00", true)]
+        [DataRow("12:30:00", "==", "12:31:00", false)]
+        [DataRow("12:30:00", "!=", "12:30:00", false)]
+        [DataRow("12:30:00", "!=", "12:31:00", true)]
+        [DataRow("24:00:00", "==", "23:59:59", false)]
+        [DataRow("24:00:00", "!=", "23:59:59", true)]
+        [DataRow("127:23:54", "==", "127:23:54", true)]
+        [DataRow("12:00:00", "!=", "15:00:00", true)]
+        [DataRow("192:59:59", "==", "193:00:00", false)]
+        [DataRow("192:59:59", "!=", "193:00:00", true)]
+        public void EqualOperator_ReturnsExpectedResult(string timePeriod1Text, string operatorText, string timePeriod2Text, bool expectedResult)
+        {
+            TimePeriod timePeriod1 = new TimePeriod(timePeriod1Text);
+            TimePeriod timePeriod2 = new TimePeriod(timePeriod2Text);
+
+            switch (operatorText)
+            {
+                case "==":
+                    Assert.AreEqual(expectedResult, timePeriod1 == timePeriod2);
+                    break;
+                case "!=":
+                    Assert.AreEqual(expectedResult, timePeriod1 != timePeriod2);
+                    break;
+            }
+        }
+
+        #endregion
+
+        #region ===== Comparable =====
+
+        [TestMethod, TestCategory("Compares")]
+        public void CompareToMethod_NullArgument_ReturnsPositiveValue()
+        {
+            TimePeriod timePeriod = new TimePeriod(12, 23, 30);
+            int result = timePeriod.CompareTo(null);
+            Assert.IsTrue(result > 0);
+        }
+
+        [TestMethod, TestCategory("Compares")]
+        public void CompareToMethod_NonTimePeriodObjectArgument_ThrowsArgumentException()
+        {
+            TimePeriod timePeriod = new TimePeriod(12, 23, 30);
+            Assert.ThrowsException<ArgumentException>(() => timePeriod.CompareTo("not a timePeriod object"));
+        }
+
+        [TestMethod, TestCategory("Compares")]
+        public void CompareToMethod_SameTimePeriodArgument_ReturnsZero()
+        {
+            TimePeriod timePeriod1 = new TimePeriod(12, 23, 30);
+            TimePeriod timePeriod2 = new TimePeriod(12, 23, 30);
+            int result = timePeriod1.CompareTo(timePeriod2);
+            Assert.AreEqual(0, result);
+        }
+
+        [TestMethod, TestCategory("Compares")]
+        public void CompareToMethod_EarlierTimePeriodArgument_ReturnsNegativeValue()
+        {
+            TimePeriod timePeriod1 = new TimePeriod(12, 23, 30);
+            TimePeriod timePeriod2 = new TimePeriod(12, 30, 30);
+            int result = timePeriod1.CompareTo(timePeriod2);
+            Assert.IsTrue(result < 0);
+        }
+
+        [TestMethod, TestCategory("Compares")]
+        public void CompareToMethod_LaterTimePeriodArgument_ReturnsPositiveValue()
+        {
+            TimePeriod timePeriod1 = new TimePeriod(12, 30, 30);
+            TimePeriod timePeriod2 = new TimePeriod(12, 23, 30);
+            int result = timePeriod1.CompareTo(timePeriod2);
+            Assert.IsTrue(result > 0);
+        }
+
+        [DataTestMethod, TestCategory("Compares")]
+        [DataRow("1:00:00", ">", "2:00:00", false)]
+        [DataRow("1:00:00", ">", "1:01:00", false)]
+        [DataRow("1:00:00", ">", "1:00:01", false)]
+        [DataRow("1:00:00", ">", "1:00:00", false)]
+        [DataRow("1:00:00", ">=", "2:00:00", false)]
+        [DataRow("1:00:00", ">=", "1:01:00", false)]
+        [DataRow("1:00:00", ">=", "1:00:01", false)]
+        [DataRow("1:00:00", ">=", "1:00:00", true)]
+        [DataRow("1:00:00", "<", "2:00:00", true)]
+        [DataRow("1:00:00", "<", "1:01:00", true)]
+        [DataRow("1:00:00", "<", "1:00:01", true)]
+        [DataRow("1:00:00", "<", "1:00:00", false)]
+        [DataRow("1:00:00", "<=", "2:00:00", true)]
+        [DataRow("1:00:00", "<=", "1:01:00", true)]
+        [DataRow("1:00:00", "<=", "1:00:01", true)]
+        [DataRow("1:00:00", "<=", "1:00:00", true)]
+        [DataRow("127:00:01", ">", "127:00:00", true)]
+        public void CompareOperator_ReturnsExpectedResult(string timePeriod1Text, string operatorText, string timePeriod2Text, bool expectedResult)
+        {
+            TimePeriod timePeriod1 = new TimePeriod(timePeriod1Text);
+            TimePeriod timePeriod2 = new TimePeriod(timePeriod2Text);
+
+            switch (operatorText)
+            {
+                case ">":
+                    Assert.AreEqual(expectedResult, timePeriod1 > timePeriod2);
+                    break;
+                case ">=":
+                    Assert.AreEqual(expectedResult, timePeriod1 >= timePeriod2);
+                    break;
+                case "<":
+                    Assert.AreEqual(expectedResult, timePeriod1 < timePeriod2);
+                    break;
+                case "<=":
+                    Assert.AreEqual(expectedResult, timePeriod1 <= timePeriod2);
+                    break;
+            }
+        }
+
+        #endregion
+
         #region ===== Arithmetic operation =====
 
         [DataTestMethod, TestCategory("Arithmetics")]
@@ -211,6 +391,22 @@ namespace TimeUnitTests
                     Assert.AreEqual(expectedResult, (timePeriod1 - timePeriod2).ToString() == newTimePeriodResult);
                     break;
             }
+        }
+
+        #endregion
+
+        #region ===== ToString =====
+
+        [DataTestMethod, TestCategory("ToString")]
+        [DataRow(12, 30, 30, "12:30:30")]
+        [DataRow(0, 0, 0, "0:00:00")]
+        [DataRow(78, 59, 59, "78:59:59")]
+        [DataRow(0, 30, 29, "0:30:29")]
+        public void ToString_ReturnsExpectedResult(long hours, long minutes, long seconds, string expectedString)
+        {
+            TimePeriod timePeriod = new TimePeriod(hours, minutes, seconds);
+            string actualString = timePeriod.ToString();
+            Assert.AreEqual(expectedString, actualString);
         }
 
         #endregion
