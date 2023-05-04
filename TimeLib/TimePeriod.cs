@@ -44,7 +44,10 @@ namespace TimeLib
             long leftTotalSeconds = (left.Hours * 3600) + (left.Minutes * 60) + left.Seconds;
             long rightTotalSeconds = (right.Hours * 3600) + (right.Minutes * 60) + right.Seconds;
 
-            Seconds = leftTotalSeconds >= rightTotalSeconds ? leftTotalSeconds - rightTotalSeconds : rightTotalSeconds - leftTotalSeconds;
+            if(leftTotalSeconds > rightTotalSeconds) 
+                throw new ArgumentException("The total seconds of the left time are greater than the right time");
+
+            Seconds = rightTotalSeconds - leftTotalSeconds;
         }
 
         /// <summary>

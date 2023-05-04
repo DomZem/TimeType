@@ -6,10 +6,12 @@ namespace TimeConsoleAppDemo
     {
         static void Main(string[] args)
         {
-            TimePeriod timePeriod1 = new ("29:58:12");
-            TimePeriod timePeriod2 = new ("12:25:23");
+            Time time1 = new Time("7:30:00");
+            Time time2 = new Time("21:30:00");
 
-            Console.WriteLine(timePeriod1 - timePeriod2);
+            TimePeriod period1 = new TimePeriod(time1, time2);
+
+            Console.WriteLine(period1);
         }
     }
 }
