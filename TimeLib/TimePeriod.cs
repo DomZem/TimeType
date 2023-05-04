@@ -5,22 +5,19 @@ namespace TimeLib
     public readonly struct TimePeriod : IEquatable<TimePeriod>, IComparable, IComparable<TimePeriod>
     {
         /// <summary>
-        /// Gets the total number of seconds.
+        /// Gets the total number of seconds in this TimePeriod object.
         /// </summary>
         public readonly long Seconds { get; }
 
         #region ===== Constructors =====
 
         /// <summary>
-        ///  Initializes a new instance of the <see cref="TimePeriod"/> class with the specified number of hours, minutes and seconds.
+        /// Initializes a new instance of the TimePeriod class using the specified number of hours, minutes, and seconds.
         /// </summary>
-        /// <param name="hours">The number of hours in the time period.</param>
-        /// <param name="minutes">The number of minutes in the time period.</param>
-        /// <param name="seconds">The number of seconds in the time period.</param>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// Thrown when <paramref name="hours"/> is negative, <paramref name="minutes"/> is negative or greater than 59,
-        /// or <paramref name="seconds"/> is negative or greater than 59.
-        /// </exception>
+        /// <param name="hours">The number of hours.</param>
+        /// <param name="minutes">The number of minutes.</param>
+        /// <param name="seconds">The number of seconds.</param>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when any of the arguments is negative or minutes/seconds are greater than 59.</exception>
         public TimePeriod(long hours, long minutes, long seconds)
         {
             if(hours < 0 || minutes < 0 || minutes > 59 || seconds < 0 || seconds > 59)
@@ -30,25 +27,18 @@ namespace TimeLib
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TimePeriod"/> class with the specified number of hours and minutes, setting seconds to 0.
+        /// Initializes a new instance of the TimePeriod class using the specified number of hours and minutes, and sets the number of seconds to zero.
         /// </summary>
-        /// <param name="hours">The number of hours in the time period.</param>
-        /// <param name="minutes">The number of minutes in the time period.</param>
+        /// <param name="hours">The number of hours.</param>
+        /// <param name="minutes">The number of minutes.</param>
         public TimePeriod(long hours, long minutes): this(hours, minutes, 0) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TimePeriod"/> class
-        /// using the given number of seconds. Hours and minutes are set to zero.
+        /// Initializes a new instance of the TimePeriod class using the specified number of seconds and sets the number of hours and minutes to zero.
         /// </summary>
-        /// <param name="seconds">The number of seconds in the time period.</param>
+        /// <param name="seconds">The number of seconds.</param>
         public TimePeriod(long seconds): this(0, 0, seconds) { }
 
-        /// <summary>
-        ///  Initializes a new instance of the <see cref="TimePeriod"/> class using two Time objects. 
-        ///  Calculates the difference in seconds between the two Time objects and sets the Seconds property accordingly.
-        /// </summary>
-        /// <param name="left">The left operand <see cref="Time"/> object.</param>
-        /// <param name="right">The right operand <see cref="Time"/> object.</param>
         public TimePeriod(Time left, Time right)
         {
             long leftTotalSeconds = (left.Hours * 3600) + (left.Minutes * 60) + left.Seconds;
@@ -58,11 +48,11 @@ namespace TimeLib
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TimePeriod"/> class with the specified time in string format "hh:mm:ss".
+        /// Initializes a new instance of the TimePeriod class using the specified string representation of time.
         /// </summary>
-        /// <param name="timeText">A string that represents the time period in the format "hh:mm:ss"</param>
-        /// <exception cref="ArgumentException">Thrown when the input string is null or empty.</exception>
-        /// <exception cref="FormatException">Thrown when the input string cannot be parsed into a valid time period.</exception>
+        /// <param name="timeText">The string representation of time.</param>
+        /// <exception cref="ArgumentException">Thrown when the input is null or empty.</exception>
+        /// <exception cref="FormatException">Thrown when the input is not in a valid time format.</exception>
         public TimePeriod(string timeText)
         {
             if (String.IsNullOrEmpty(timeText))
@@ -87,6 +77,11 @@ namespace TimeLib
 
         #region ===== Equatable =====
 
+        /// <summary>
+        /// Determines whether the specified object is equal to the current TimePeriod object.
+        /// </summary>
+        /// <param name="obj">The object to compare with the current TimePeriod object.</param>
+        /// <returns>true if the specified object is equal to the current TimePeriod object; otherwise, false.</returns>
         public override bool Equals(object? obj)
         {
             if (obj is null) return false;
@@ -98,10 +93,10 @@ namespace TimeLib
         }
 
         /// <summary>
-        /// Determines whether this <see cref="TimePeriod"/> instance is equal to another <see cref="TimePeriod"/> instance.
+        /// Determines whether the specified TimePeriod object is equal to the current TimePeriod object.
         /// </summary>
-        /// <param name="other">The <see cref="TimePeriod"/> object to compare with this instance.</param>
-        /// <returns><c>true</c> if the two instances have the same number of seconds; otherwise, <c>false</c>.</returns>
+        /// <param name="other">The TimePeriod object to compare with the current TimePeriod object.</param>
+        /// <returns>true if the specified TimePeriod object is equal to the current TimePeriod object; otherwise, false.</returns>
         public bool Equals(TimePeriod other) => Seconds == other.Seconds;
 
         public override int GetHashCode() => (Seconds).GetHashCode();
@@ -115,17 +110,12 @@ namespace TimeLib
         #region ===== Comparable =====
 
         /// <summary>
-        /// Compares this TimePeriod object with another object, returning an integer that indicates the relationship between the two objects.
+        /// Compares the current instance with another object of the same type and returns an integer that indicates whether the current instance
+        /// precedes, follows, or occurs in the same position in the sort order as the other object.
         /// </summary>
-        /// <param name="obj">The object to compare to this TimePeriod object.</param>
-        /// <returns>
-        /// A value less than zero if this TimePeriod object is less than the <paramref name="obj"/> argument,
-        /// zero if this TimePeriod object is equal to the <paramref name="obj"/> argument, and a value greater
-        /// than zero if this TimePeriod object is greater than the <paramref name="obj"/> argument.
-        /// </returns>
-        /// <exception cref="ArgumentException">
-        /// Thrown when the <paramref name="obj"/> argument is not a TimePeriod object.
-        /// </exception>
+        /// <param name="obj">The object to compare with the current instance.</param>
+        /// <returns>A value that indicates the relative order of the objects being compared.</returns>
+        /// <exception cref="ArgumentException">Thrown when the given argument is not of type TimePeriod.</exception>
         public int CompareTo(object? obj)
         {
             if (obj is null) return +1;
@@ -139,10 +129,11 @@ namespace TimeLib
         }
 
         /// <summary>
-        /// Compares the current <see cref="TimePeriod"/> object with another <see cref="TimePeriod"/> object and returns an integer that indicates their relative positions in the sort order.
+        /// Compares the current instance with another TimePeriod object and returns an integer that indicates whether the current instance
+        /// precedes, follows, or occurs in the same position in the sort order as the other TimePeriod object.
         /// </summary>
-        /// <param name="other">The <see cref="TimePeriod"/> object to compare with the current object.</param>
-        /// <returns>A signed integer that indicates the relative position of the current object and the <paramref name="other"/> parameter in the sort order.</returns>
+        /// <param name="other">The TimePeriod object to compare with the current instance.</param>
+        /// <returns>A value that indicates the relative order of the TimePeriod objects being compared.</returns>
         public int CompareTo(TimePeriod other) => Seconds.CompareTo(other.Seconds);
      
         public static bool operator >(TimePeriod left, TimePeriod right) => left.CompareTo(right) > 0;
@@ -157,14 +148,70 @@ namespace TimeLib
 
         #region ===== Arithmetic operation =====
 
+        /// <summary>
+        /// Adds two time periods together and returns the sum as a new TimePeriod object.
+        /// </summary>
+        /// <param name="left">The first TimePeriod to add.</param>
+        /// <param name="right">The second TimePeriod to add.</param>
+        /// <returns>A new TimePeriod representing the sum of the two input TimePeriods.</returns>
+        public static TimePeriod Plus(TimePeriod left, TimePeriod right)
+        {
+            long totalSeconds = left.Seconds + right.Seconds;
+            long hours = totalSeconds / 3600;
+            long minutes = (totalSeconds % 3600) / 60;
+            long seconds = totalSeconds % 60;
+
+            return new TimePeriod(hours, minutes, seconds); 
+        }
+
+        /// <summary>
+        /// Adds a TimePeriod to the current instance and returns the sum as a new TimePeriod object.
+        /// </summary>
+        /// <param name="timePeriod">The TimePeriod to add to the current instance.</param>
+        /// <returns>A new TimePeriod representing the sum of the current instance and the input TimePeriod.</returns>
+        public TimePeriod Plus(TimePeriod timePeriod) => Plus(this, timePeriod);
+
+        public static TimePeriod operator +(TimePeriod left, TimePeriod right) => Plus(left, right);
+
+        /// <summary>
+        /// Subtracts one TimePeriod from another and returns the result as a new TimePeriod object.
+        /// </summary>
+        /// <param name="left">The TimePeriod to subtract from.</param>
+        /// <param name="right">The TimePeriod to subtract.</param>
+        /// <returns>A new TimePeriod representing the result of the subtraction.</returns>
+        /// <exception cref="ArgumentException">Thrown when the result is negative.</exception>
+        public static TimePeriod Minus(TimePeriod left, TimePeriod right)
+        {
+            long totalSeconds = left.Seconds - right.Seconds;
+
+            if (totalSeconds < 0)
+                throw new ArgumentException();
+
+            long hours = totalSeconds / 3600;
+            long minutes = (totalSeconds % 3600) / 60;
+            long seconds = totalSeconds % 60;
+
+            return new TimePeriod(hours, minutes, seconds);
+        }
+
+        /// <summary>
+        /// Subtracts a TimePeriod from the current instance and returns the result as a new TimePeriod object.
+        /// </summary>
+        /// <param name="timePeriod">The TimePeriod to subtract from the current instance.</param>
+        /// <returns>A new TimePeriod representing the result of the subtraction.</returns>
+        /// <exception cref="ArgumentException">Thrown when the result is negative.</exception>
+        public TimePeriod Minus(TimePeriod timePeriod) => Minus(this, timePeriod);
+
+        public static TimePeriod operator -(TimePeriod left, TimePeriod right) => Minus(left, right);
+
         #endregion
 
         #region ===== ToString =====
 
         /// <summary>
-        /// Returns the string representation of this <see cref="TimePeriod"/> object in the format "hh:mm:ss".
+        /// Returns a string representation of the current TimePeriod object.
         /// </summary>
-        /// <returns>The string representation of this <see cref="TimePeriod"/> object.</returns>
+        /// <returns>A string representation of the current TimePeriod object in the format 'hours:minutes:seconds'.</returns>
         public override string ToString() => $"{Seconds / 3600}:{(Seconds / 60) % 60:D2}:{Seconds % 60:D2}";
 
         #endregion

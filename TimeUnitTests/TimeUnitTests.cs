@@ -8,19 +8,16 @@ namespace TimeUnitTests
         #region ===== Constructor(Hours, Minutes, Seconds) =====
 
         [DataTestMethod, TestCategory("Constructors")]
-        [DataRow((byte)12, (byte)30, (byte)45,
-                 (byte)12, (byte)30, (byte)45)]
-        [DataRow((byte)11, (byte)29, (byte)59,
-                 (byte)11, (byte)29, (byte)59)]
-        [DataRow((byte)1, (byte)59, (byte)59,
-                 (byte)1, (byte)59, (byte)59)]
-        public void Constructor_HoursMinutesSecondsArguments_SetsExpectedProperties(byte hours, byte minutes, byte seconds, byte expectedHours, byte expectedMinutes, byte expectedSeconds)
+        [DataRow((byte)12, (byte)30, (byte)45)]
+        [DataRow((byte)11, (byte)29, (byte)59)]
+        [DataRow((byte)1, (byte)59, (byte)59)]
+        public void Constructor_HoursMinutesSecondsArguments_SetsExpectedProperties(byte hours, byte minutes, byte seconds)
         {
-            var time = new Time(hours, minutes, seconds);
+            Time time = new Time(hours, minutes, seconds);
 
-            Assert.AreEqual(time.Hours, expectedHours);
-            Assert.AreEqual(time.Minutes, expectedMinutes);
-            Assert.AreEqual(time.Seconds, expectedSeconds);
+            Assert.AreEqual(time.Hours, hours);
+            Assert.AreEqual(time.Minutes, minutes);
+            Assert.AreEqual(time.Seconds, seconds);
         }
 
         [DataTestMethod, TestCategory("Constructors")]
@@ -37,18 +34,15 @@ namespace TimeUnitTests
         #region ===== Constructor(Hours, Minutes) =====
 
         [DataTestMethod, TestCategory("Constructors")]
-        [DataRow((byte)12, (byte)30,
-                 (byte)12, (byte)30)]
-        [DataRow((byte)11, (byte)29,
-                 (byte)11, (byte)29)]
-        [DataRow((byte)1, (byte)59,
-                 (byte)1, (byte)59)]
-        public void Constructor_HoursMinutesArguments_SetsExpectedProperties(byte hours, byte minutes, byte expectedHours, byte expectedMinutes)
+        [DataRow((byte)12, (byte)30)]
+        [DataRow((byte)11, (byte)29)]
+        [DataRow((byte)1, (byte)59)]
+        public void Constructor_HoursMinutesArguments_SetsExpectedProperties(byte hours, byte minutes)
         {
-            var time = new Time(hours, minutes);
+            Time time = new Time(hours, minutes);
 
-            Assert.AreEqual(time.Hours, expectedHours);
-            Assert.AreEqual(time.Minutes, expectedMinutes);
+            Assert.AreEqual(time.Hours, hours);
+            Assert.AreEqual(time.Minutes, minutes);
             Assert.AreEqual(time.Seconds, 0);
         }
 
@@ -65,14 +59,14 @@ namespace TimeUnitTests
         #region ===== Constructor(Hours) =====
 
         [DataTestMethod, TestCategory("Constructors")]
-        [DataRow((byte)12, (byte)12)]
-        [DataRow((byte)11, (byte)11)]
-        [DataRow((byte)1, (byte)1)]
-        public void Constructor_HoursArgument_SetsExpectedProperties(byte hours, byte expectedHours)
+        [DataRow((byte)12)]
+        [DataRow((byte)11)]
+        [DataRow((byte)1)]
+        public void Constructor_HoursArgument_SetsExpectedProperties(byte hours)
         {
-            var time = new Time(hours);
+            Time time = new Time(hours);
 
-            Assert.AreEqual(time.Hours, expectedHours);
+            Assert.AreEqual(time.Hours, hours);
             Assert.AreEqual(time.Minutes, 0);
             Assert.AreEqual(time.Seconds, 0);
         }
