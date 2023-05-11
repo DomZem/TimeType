@@ -5,29 +5,29 @@ namespace TimeLib
     public readonly struct Time : IEquatable<Time>, IComparable, IComparable<Time>
     {
         /// <summary>
-        /// Gets the number of hours in the time.
+        /// Gets the number of hours.
         /// </summary>
         public readonly byte Hours { get; }
 
         /// <summary>
-        /// Gets the number of minutes in the time.
+        /// Gets the number of minutes.
         /// </summary>
         public readonly byte Minutes { get; }
 
         /// <summary>
-        /// Gets the number of seconds in the time.
+        /// Gets the number of seconds.
         /// </summary>
         public readonly byte Seconds { get; }
 
         #region ===== Constructors =====
 
         /// <summary>
-        /// Creates a new Time object with the specified hours, minutes, and seconds. 
+        /// Initializes a new instance of the <see cref="Time"/> class.
         /// </summary>
-        /// <param name="hours">The number of hours in the time. Must be between 0 and 23.</param>
-        /// <param name="minutes">The number of minutes in the time. Must be between 0 and 59.</param>
-        /// <param name="seconds">The number of seconds in the time. Must be between 0 and 59.</param>
-        /// <exception cref="ArgumentOutOfRangeException">Thrown if any of the parameters are out of range.</exception>
+        /// <param name="hours">The number of hours (0-23).</param>
+        /// <param name="minutes">The number of minutes (0-59).</param>
+        /// <param name="seconds">The number of seconds (0-59).</param>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when any of the input values are out of range.</exception>
         public Time(byte hours, byte minutes, byte seconds)
         {
             if (hours < 0 || hours > 23 || minutes < 0 || minutes > 59 || seconds < 0 || seconds > 59)
@@ -39,23 +39,24 @@ namespace TimeLib
         }
 
         /// <summary>
-        /// Creates a new Time object with the specified hours and minutes. The seconds are set to 0.
+        /// Initializes a new instance of the <see cref="Time"/> class with the specified hours and minutes, setting seconds to 0.
         /// </summary>
-        /// <param name="hours">The number of hours in the time. Must be between 0 and 23.</param>
-        /// <param name="minutes">The number of hours in the time. Must be between 0 and 23.</param>
+        /// <param name="hours">The number of hours (0-23).</param>
+        /// <param name="minutes">The number of minutes (0-59).</param>
         public Time(byte hours, byte minutes) : this(hours, minutes, 0) { }
 
         /// <summary>
-        /// Creates a new Time object with the specified number of hours. The minutes and seconds are set to 0.
+        /// Initializes a new instance of the <see cref="Time"/> class with the specified hours, setting minutes and seconds to 0.
         /// </summary>
-        /// <param name="hours">The number of hours in the time. Must be between 0 and 23.</param>
+        /// <param name="hours">The number of hours (0-23).</param>
         public Time(byte hours) : this(hours, 0, 0) { }
 
         /// <summary>
-        /// Creates a new Time object from a string in the format "hh:mm:ss".
+        /// Initializes a new instance of the <see cref="Time"/> class based on the provided time string in the format "HH:mm:ss".
         /// </summary>
-        /// <param name="timeText">The time string to parse. Must be in the format "hh:mm:ss".</param>
-        /// <exception cref="ArgumentException">Thrown when the time string is null, empty or not in the correct format.</exception>
+        /// <param name="timeText">The time string in the format "HH:mm:ss".</param>
+        /// <exception cref="ArgumentException">Thrown when the input string is null or empty.</exception>
+        /// <exception cref="FormatException">Thrown when the input string has an invalid format.</exception>
         public Time(string timeText)
         {
             if (String.IsNullOrEmpty(timeText))
@@ -65,7 +66,7 @@ namespace TimeLib
             bool isMatch = Regex.IsMatch(timeText, regexPattern);
 
             if (!isMatch)
-                throw new ArgumentException();
+                throw new FormatException();
 
             string[] timeSplit = timeText.Split(':');
 
@@ -76,7 +77,7 @@ namespace TimeLib
 
         // Extra
         /// <summary>
-        /// Creates a new Time object initialized to the current system time.
+        /// Initializes a new instance of the <see cref="Time"/> class with the current system time.
         /// </summary>
         public Time() : this((byte)DateTime.Now.Hour, (byte)DateTime.Now.Minute, (byte)DateTime.Now.Second) { }
 
@@ -84,6 +85,11 @@ namespace TimeLib
 
         #region ===== Equatable =====
 
+        /// <summary>
+        /// Determines whether the current <see cref="Time"/> object is equal to another object.
+        /// </summary>
+        /// <param name="obj">The object to compare.</param>
+        /// <returns><see langword="true"/> if the current object is equal to the specified object; otherwise, <see langword="false"/>.</returns>
         public override bool Equals(object? obj)
         {
             if (obj is null) return false;
@@ -95,10 +101,10 @@ namespace TimeLib
         }
 
         /// <summary>
-        /// Determines whether this <see cref="Time"/> instance is equal to another <see cref="Time"/> instance.
+        /// Determines whether the current <see cref="Time"/> object is equal to another <see cref="Time"/> object.
         /// </summary>
-        /// <param name="other">The <see cref="Time"/> object to compare with this instance.</param>
-        /// <returns><c>true</c> if the two instances have the same number of hours, minutes and seconds; otherwise, <c>false</c>.</returns>
+        /// <param name="other">The <see cref="Time"/> object to compare.</param>
+        /// <returns><see langword="true"/> if the current object has the same hours, minutes, and seconds as the specified <see cref="Time"/> object; otherwise, <see langword="false"/>.</returns>
         public bool Equals(Time other) => Hours == other.Hours && Minutes == other.Minutes && Seconds == other.Seconds;
 
         public override int GetHashCode() => (Hours, Minutes, Seconds).GetHashCode();
@@ -112,17 +118,11 @@ namespace TimeLib
         #region ===== Comparable =====
 
         /// <summary>
-        /// Compares this Time object with another object, returning an integer that indicates the relationship between the two objects.
+        /// Compares the current <see cref="Time"/> object with another object and returns an indication of their relative order.
         /// </summary>
-        /// <param name="obj">The object to compare to this Time object.</param>
-        /// <returns>
-        /// A value less than zero if this Time object is less than the <paramref name="obj"/> argument,
-        /// zero if this Time object is equal to the <paramref name="obj"/> argument, and a value greater
-        /// than zero if this Time object is greater than the <paramref name="obj"/> argument.
-        /// </returns>
-        /// <exception cref="ArgumentException">
-        /// Thrown when the <paramref name="obj"/> argument is not a Time object.
-        /// </exception>
+        /// <param name="obj">The object to compare, which must be of type <see cref="Time"/>.</param>
+        /// <returns>A value indicating the relative order of the objects being compared.</returns>
+        /// <exception cref="ArgumentException">Thrown when the <paramref name="obj"/> parameter is not of type <see cref="Time"/>.</exception>
         public int CompareTo(object? obj)
         {
             if (obj is null) return +1;
@@ -136,10 +136,10 @@ namespace TimeLib
         }
 
         /// <summary>
-        /// Compares the current <see cref="Time"/> object with another <see cref="Time"/> object and returns an integer that indicates their relative positions in the sort order.
+        /// Compares the current <see cref="Time"/> object with another <see cref="Time"/> object and returns an indication of their relative order.
         /// </summary>
-        /// <param name="other">The <see cref="Time"/> object to compare with the current object.</param>
-        /// <returns>A signed integer that indicates the relative position of the current object and the <paramref name="other"/> parameter in the sort order.</returns>
+        /// <param name="other">The <see cref="Time"/> object to compare.</param>
+        /// <returns>A value indicating the relative order of the objects being compared.</returns>
         public int CompareTo(Time other)
         {
             if (Hours != other.Hours)
@@ -164,11 +164,11 @@ namespace TimeLib
         #region ===== Arithmetic operation =====
 
         /// <summary>
-        /// Adds the specified time period to the given time and returns a new <see cref="Time"/> object.
+        /// Adds a <see cref="TimePeriod"/> to a <see cref="Time"/> and returns a new <see cref="Time"/> object representing the result.
         /// </summary>
-        /// <param name="time">The time to which to add the time period.</param>
-        /// <param name="timePeriod">The time period to add to the time.</param>
-        /// <returns>A new <see cref="Time"/> object that represents the result of adding the time period to the given time.</returns>
+        /// <param name="time">The <see cref="Time"/> object to add the <paramref name="timePeriod"/> to.</param>
+        /// <param name="timePeriod">The <see cref="TimePeriod"/> to add to the <paramref name="time"/>.</param>
+        /// <returns>A new <see cref="Time"/> object representing the result of adding the <paramref name="timePeriod"/> to the <paramref name="time"/>.</returns>
         public static Time Plus(Time time, TimePeriod timePeriod)
         {
             long totalSeconds = time.GetTotalSeconds() + timePeriod.Seconds;
@@ -180,17 +180,21 @@ namespace TimeLib
             return new Time(hours, minutes, seconds);
         }
 
+        /// <summary>
+        /// Adds a <see cref="TimePeriod"/> to the current <see cref="Time"/> object and returns a new <see cref="Time"/> object representing the result.
+        /// </summary>
+        /// <param name="timePeriod">The <see cref="TimePeriod"/> to add to the current <see cref="Time"/> object.</param>
+        /// <returns>A new <see cref="Time"/> object representing the result of adding the <paramref name="timePeriod"/> to the current <see cref="Time"/> object.</returns>
         public Time Plus(TimePeriod timePeriod) => Plus(this, timePeriod);
 
         public static Time operator +(Time time, TimePeriod timePeriod) => Plus(time, timePeriod);
 
         /// <summary>
-        /// Subtracts the given <see cref="TimePeriod"/> from the specified <see cref="Time"/> instance.
-        /// If the resulting time is negative, it is wrapped to the previous day.
+        /// Subtracts a <see cref="TimePeriod"/> from a <see cref="Time"/> and returns a new <see cref="Time"/> object representing the result.
         /// </summary>
-        /// <param name="time">The <see cref="Time"/> instance to subtract from.</param>
-        /// <param name="timePeriod">The <see cref="TimePeriod"/> to subtract.</param>
-        /// <returns>A new <see cref="Time"/> instance that represents the result of the subtraction.</returns>
+        /// <param name="time">The <see cref="Time"/> object to subtract the <paramref name="timePeriod"/> from.</param>
+        /// <param name="timePeriod">The <see cref="TimePeriod"/> to subtract from the <paramref name="time"/>.</param>
+        /// <returns>A new <see cref="Time"/> object representing the result of subtracting the <paramref name="timePeriod"/> from the <paramref name="time"/>.</returns>
         public static Time Minus(Time time, TimePeriod timePeriod)
         {
             long totalSeconds = time.GetTotalSeconds() - timePeriod.Seconds;
@@ -203,6 +207,11 @@ namespace TimeLib
             return new Time(hours, minutes, seconds);
         }
 
+        /// <summary>
+        /// Subtracts a <see cref="TimePeriod"/> from the current <see cref="Time"/> object and returns a new <see cref="Time"/> object representing the result.
+        /// </summary>
+        /// <param name="timePeriod">The <see cref="TimePeriod"/> to subtract from the current <see cref="Time"/> object.</param>
+        /// <returns>A new <see cref="Time"/> object representing the result of subtracting the <paramref name="timePeriod"/> from the current <see cref="Time"/> object.</returns>
         public Time Minus(TimePeriod timePeriod) => Minus(this, timePeriod);
 
         public static Time operator -(Time time, TimePeriod timePeriod) => Minus(time, timePeriod);
@@ -212,9 +221,9 @@ namespace TimeLib
         #region ===== ToString =====
 
         /// <summary>
-        /// Returns the string representation of this <see cref="Time"/> object in the format "hh:mm:ss".
+        /// Returns a string representation of the current <see cref="Time"/> object.
         /// </summary>
-        /// <returns>The string representation of this <see cref="Time"/> object.</returns>
+        /// <returns>A string representation of the current <see cref="Time"/> object in the format "HH:MM:SS".</returns>
         public override string ToString() => $"{Hours:00}:{Minutes:00}:{Seconds:00}";
 
         #endregion

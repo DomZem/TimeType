@@ -128,13 +128,19 @@ namespace TimeUnitTests
         }
 
         [DataTestMethod, TestCategory("Constructors")]
-        [DataRow("")]
-        [DataRow(null)]
         [DataRow("23:50:60")]
         [DataRow("23:50:-1")]
         [DataRow("23:60:00")]
         [DataRow("23:-1:00")]
         [DataRow("-1:12:15")]
+        public void Constructor_IncorrectTextArgument_ThrowsFormatException(string text)
+        {
+            Assert.ThrowsException<FormatException>(() => new Time(text));
+        }
+
+        [DataTestMethod, TestCategory("Constructors")]
+        [DataRow("")]
+        [DataRow(null)]
         public void Constructor_IncorrectTextArgument_ThrowsArgumentException(string text)
         {
             Assert.ThrowsException<ArgumentException>(() => new Time(text));
