@@ -8,15 +8,22 @@ namespace TimeConsoleAppDemo
 
         public string LastName { get; }
 
-        public TimePeriod RunningTime { get; }   
+        public TimePeriod ScoreTime { get; private set; }   
 
-        public Sprinter(string firstName, string lastName, string score) 
-        { 
+        public Sprinter(string firstName, string lastName, string scoreTime) 
+        {
+            if (String.IsNullOrEmpty(firstName) || String.IsNullOrEmpty(lastName) || String.IsNullOrEmpty(scoreTime))
+                throw new ArgumentException();
+
             FirstName = firstName;
             LastName = lastName;    
-            RunningTime = new TimePeriod(score);    
+            ScoreTime = new TimePeriod(scoreTime);    
         }
 
-        public override string ToString() => $"{FirstName} {LastName} | {RunningTime}"; 
+        public void AddScoreTime(TimePeriod time) => ScoreTime += time;
+       
+        public void SubstractScoreTime(TimePeriod time) => ScoreTime -= time;
+
+        public override string ToString() => $"{FirstName} {LastName} | {ScoreTime}"; 
     }
 }
